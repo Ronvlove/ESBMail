@@ -77,7 +77,8 @@ void GetEmailThread::run()
 
         if(m_stop) {
             m_stop = false;
-            break;
+            quit();
+            return;
         }
     }
 }
