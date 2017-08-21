@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
+    <width>520</width>
     <height>600</height>
    </rect>
   </property>
@@ -15,60 +15,26 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0" colspan="4">
-     <widget class="QListWidget" name="listWidget"/>
+    <item row="1" column="1" colspan="4">
+     <widget class="QLineEdit" name="lineEditFile"/>
     </item>
-    <item row="5" column="3">
-     <widget class="QPushButton" name="pushButton">
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_4">
       <property name="text">
-       <string>获取email</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="0" colspan="3">
-     <widget class="QProgressBar" name="progressBar">
-      <property name="value">
-       <number>0</number>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="2">
-     <widget class="QLabel" name="label_2">
-      <property name="text">
-       <string>结束编号：</string>
+       <string>保存文件：</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </item>
-    <item row="3" column="1">
-     <widget class="QSpinBox" name="spinBoxStart">
-      <property name="maximum">
-       <number>100000</number>
-      </property>
-      <property name="value">
-       <number>8550</number>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="3">
-     <widget class="QSpinBox" name="spinBoxEnd">
-      <property name="maximum">
-       <number>100000</number>
-      </property>
-      <property name="value">
-       <number>8551</number>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1" colspan="3">
-     <widget class="QLineEdit" name="lineEditUrl">
+    <item row="3" column="0">
+     <widget class="QLabel" name="label_3">
       <property name="text">
-       <string>http://www.esb-online.com/news/newsdetails/article/</string>
+       <string>开始编号：</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </item>
@@ -88,47 +54,101 @@
       </property>
      </widget>
     </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="label_3">
+    <item row="2" column="1" colspan="5">
+     <widget class="QLineEdit" name="lineEditUrl">
       <property name="text">
-       <string>开始编号：</string>
+       <string>http://www.esb-online.com/news/newsdetails/article/</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="3">
+     <widget class="QSpinBox" name="spinBoxEnd">
+      <property name="maximum">
+       <number>100000</number>
+      </property>
+      <property name="value">
+       <number>8551</number>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QSpinBox" name="spinBoxStart">
+      <property name="maximum">
+       <number>100000</number>
+      </property>
+      <property name="value">
+       <number>8550</number>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="2">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>结束编号：</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label_4">
+    <item row="5" column="0" colspan="4">
+     <widget class="QProgressBar" name="progressBar">
+      <property name="value">
+       <number>0</number>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0" colspan="6">
+     <widget class="QListWidget" name="listWidget"/>
+    </item>
+    <item row="5" column="4">
+     <widget class="QPushButton" name="pushButton">
       <property name="text">
-       <string>保存文件：</string>
+       <string>获取Email</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="4">
+     <widget class="QLabel" name="label_5">
+      <property name="text">
+       <string>线程数：</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </item>
-    <item row="1" column="1" colspan="2">
-     <widget class="QLineEdit" name="lineEditFile"/>
-    </item>
-    <item row="1" column="3">
+    <item row="1" column="5">
      <widget class="QPushButton" name="pushButton_2">
       <property name="text">
        <string>浏览</string>
       </property>
      </widget>
     </item>
+    <item row="3" column="5">
+     <widget class="QSpinBox" name="spinBoxThreads">
+      <property name="minimum">
+       <number>1</number>
+      </property>
+      <property name="maximum">
+       <number>30</number>
+      </property>
+      <property name="value">
+       <number>10</number>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="5">
+     <widget class="QPushButton" name="stop">
+      <property name="text">
+       <string>停止</string>
+      </property>
+     </widget>
+    </item>
    </layout>
-  </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>500</width>
-     <height>23</height>
-    </rect>
-   </property>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">

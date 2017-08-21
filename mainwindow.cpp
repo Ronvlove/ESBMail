@@ -3,13 +3,26 @@
 #include <QFileDialog>
 #include <QTextStream>
 
+#define MAX_THREADS     30
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
-    m_thread = NULL;
+    m_thread.clear();
+
+    for(int i=0; i<MAX_THREADS; i++) {
+        GetEmailThread* thread = new GetEmailThread;
+        connect(thread, SIGNAL(emailAvailable(QString, int)),
+                this, SLOT(onEmailAvailable(QString, int)));
+
+        connect(thread, SIGNAL(urlChanged(QString)),
+                this, SLOT(onUrlChanged(QString)));
+
+        m_thread.append(thread);
+    }
 
     setWindowTitle(tr("ESB Mail Collector"));
 }
@@ -19,10 +32,8 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::onEmailAvailable(QString email, int num, int percent)
-{    
-    ui->progressBar->setValue(percent);
-
+void MainWindow::onEmailAvailable(QString email, int num)
+{
     if(email.isEmpty()) return;
 
     ui->listWidget->addItem(QString::number(num) + "\t" + email);
@@ -37,6 +48,15 @@ void MainWindow::onEmailAvailable(QString email, int num, int percent)
     }
 }
 
+void MainWindow::onUrlChanged(QString url)
+{
+    ui->statusBar->showMessage(url);
+
+    m_finishCnt++;
+
+    ui->progressBar->setValue(m_finishCnt*100/m_urlCount);
+}
+
 void MainWindow::on_pushButton_clicked()
 {
     if(m_fileName.isEmpty()) {
@@ -48,18 +68,40 @@ void MainWindow::on_pushButton_clicked()
         return;
     }
 
-    if(m_thread == NULL) {
-        m_thread = new GetEmailThread;
-        connect(m_thread, SIGNAL(emailAvailable(QString, int, int)),
-                this, SLOT(onEmailAvailable(QString, int, int)));
+    for(int i=0; i<MAX_THREADS; i++) {
+        if(m_thread.at(i)->isRunning()) {
+            ui->statusBar->showMessage(tr("Stop first!"));
+            return;
+        }
     }
 
-    if(!m_thread->isRunning()){
-        ui->progressBar->setValue(0);
-        m_thread->setUrl(ui->lineEditUrl->text());
-        m_thread->setStartNum(ui->spinBoxStart->value());
-        m_thread->setEndNum(ui->spinBoxEnd->value());
-        m_thread->start();
+    int threads = ui->spinBoxThreads->value();
+    int start = ui->spinBoxStart->value();
+    int end = ui->spinBoxEnd->value();
+    int step;
+    if(start > end) {
+        step = start;
+        start = end;
+        end = start;
+    }
+
+    m_urlCount = end - start;
+    m_finishCnt = 0;
+    step = m_urlCount / threads;
+
+    ui->progressBar->setValue(0);
+
+    for(int i=0; i<threads; i++) {
+        m_thread.at(i)->setUrl(ui->lineEditUrl->text());
+        m_thread.at(i)->setStartNum(start + i*step);
+
+        if(i == threads-1) {
+            m_thread.at(i)->setEndNum(end);
+        } else {
+            m_thread.at(i)->setEndNum(start + (i+1)*step);
+        }
+
+        m_thread.at(i)->start();
     }
 }
 
@@ -71,4 +113,11 @@ void MainWindow::on_pushButton_2_clicked()
                                  tr("*.txt"));
 
     ui->lineEditFile->setText(m_fileName);
+}
+
+void MainWindow::on_stop_clicked()
+{
+    for(int i=0; i<MAX_THREADS; i++) {
+        m_thread.at(i)->stop();
+    }
 }

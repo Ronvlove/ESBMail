@@ -17,17 +17,22 @@ public:
     ~MainWindow();
 
 public slots:
-    void onEmailAvailable(QString email, int num, int percent);
+    void onEmailAvailable(QString email, int num);
+    void onUrlChanged(QString url);
 
 private slots:
     void on_pushButton_clicked();
 
     void on_pushButton_2_clicked();
 
+    void on_stop_clicked();
+
 private:
     Ui::MainWindow *ui;
-    GetEmailThread *m_thread;
+    QList<GetEmailThread*> m_thread;
     QString m_fileName;
+    int m_urlCount;
+    int m_finishCnt;
 };
 
 #endif // MAINWINDOW_H

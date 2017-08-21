@@ -26,12 +26,12 @@ public:
 GetEmailThread::GetEmailThread(QObject *parent)
     : QThread(parent)
 {
-
+    m_stop = false;
 }
 
 void GetEmailThread::run()
 {
-    for(int i=m_startNum; i<=m_endNum; i++) {
+    for(int i=m_startNum; i<m_endNum; i++) {
         QString url = m_url + QString::number(i);
         QString data = TT::getHtml(url);
 
@@ -60,25 +60,36 @@ void GetEmailThread::run()
 
             email.replace("&#46;", ".");
             email.replace("[at]", "@");
+            email.remove("<br />");
+            email.remove(" ");
 
             qDebug() << i
                      << email;
 
-            int percent = 100;
-            if(m_endNum > m_startNum) {
-                percent = (i-m_startNum+1)*100/(m_endNum-m_startNum+1);
+            if(email.contains("esb-online.com")) {
+                continue;
             }
 
-            emit emailAvailable(email, i, percent);
+            emit emailAvailable(email, i);
+        }
+
+        emit urlChanged(url);
+
+        if(m_stop) {
+            m_stop = false;
+            break;
         }
     }
-
-    emit emailAvailable("", 0, 100);
 }
 
 void GetEmailThread::setUrl(const QString &url)
 {
     m_url = url;
+}
+
+void GetEmailThread::stop()
+{
+    m_stop = true;
 }
 
 void GetEmailThread::setEndNum(int endNum)

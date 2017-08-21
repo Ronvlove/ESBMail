@@ -16,8 +16,11 @@ public:
 
     void setUrl(const QString &url);
 
+    void stop();
+
 signals:
-    void emailAvailable(QString email, int num, int percent);
+    void emailAvailable(QString email, int num);
+    void urlChanged(QString url);
 
 protected:
     void run();
@@ -26,6 +29,7 @@ private:
     QString m_url;
     int m_startNum;
     int m_endNum;
+    bool m_stop;
 };
 
 #endif // GETEMAILTHREAD_H
