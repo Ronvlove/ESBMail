@@ -28,7 +28,7 @@
     <item row="5" column="0" colspan="3">
      <widget class="QProgressBar" name="progressBar">
       <property name="value">
-       <number>24</number>
+       <number>0</number>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -126,7 +126,7 @@
      <x>0</x>
      <y>0</y>
      <width>500</width>
-     <height>26</height>
+     <height>23</height>
     </rect>
    </property>
   </widget>

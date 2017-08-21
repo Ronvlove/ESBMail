@@ -10,6 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     m_thread = NULL;
+
+    setWindowTitle(tr("ESB Mail Collector"));
 }
 
 MainWindow::~MainWindow()
@@ -18,8 +20,14 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::onEmailAvailable(QString email, int num, int percent)
-{
+{    
+    ui->progressBar->setValue(percent);
+
+    if(email.isEmpty()) return;
+
     ui->listWidget->addItem(QString::number(num) + "\t" + email);
+
+    if(m_fileName.isEmpty()) return;
 
     QFile data(m_fileName);
     if (data.open(QFile::WriteOnly | QFile::Append)) {
@@ -27,8 +35,6 @@ void MainWindow::onEmailAvailable(QString email, int num, int percent)
         out << email
             << "\r\n";
     }
-
-    ui->progressBar->setValue(percent);
 }
 
 void MainWindow::on_pushButton_clicked()
@@ -46,7 +52,10 @@ void MainWindow::on_pushButton_clicked()
         m_thread = new GetEmailThread;
         connect(m_thread, SIGNAL(emailAvailable(QString, int, int)),
                 this, SLOT(onEmailAvailable(QString, int, int)));
+    }
 
+    if(!m_thread->isRunning()){
+        ui->progressBar->setValue(0);
         m_thread->setUrl(ui->lineEditUrl->text());
         m_thread->setStartNum(ui->spinBoxStart->value());
         m_thread->setEndNum(ui->spinBoxEnd->value());

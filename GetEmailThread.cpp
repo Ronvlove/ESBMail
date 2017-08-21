@@ -37,35 +37,43 @@ void GetEmailThread::run()
 
         qDebug() << url;
 
-        int nCurrentFrameStart = data.indexOf(QRegExp("class=\"mail\""));
-        if(nCurrentFrameStart < 0) {
-            qDebug() << data;
-            continue;
+        int from = 0;
+        int nCurrentFrameStart = 1;
+        while(nCurrentFrameStart > 0) {
+            nCurrentFrameStart = data.indexOf(QRegExp("class=\"mail\""), from);
+
+            from = nCurrentFrameStart+13;
+
+            QString email = data.mid(from, 100);
+
+            if(!email.contains("[at]")) {
+                continue;
+            }
+            int end = email.indexOf(QRegExp("\\</a\\>"));
+
+            if(end < 0) {
+                qDebug() << email;
+                continue;
+            }
+
+            email = email.left(end);
+
+            email.replace("&#46;", ".");
+            email.replace("[at]", "@");
+
+            qDebug() << i
+                     << email;
+
+            int percent = 100;
+            if(m_endNum > m_startNum) {
+                percent = (i-m_startNum+1)*100/(m_endNum-m_startNum+1);
+            }
+
+            emit emailAvailable(email, i, percent);
         }
-        QString email = data.mid(nCurrentFrameStart+13, 100);
-
-        int end = email.indexOf(QRegExp("\\</a\\>"));
-
-        if(end < 0) {
-            qDebug() << email;
-            continue;
-        }
-
-        email = email.left(end);
-
-        email.replace("&#46;", ".");
-        email.replace("[at]", "@");
-
-        qDebug() << i
-                 << email;
-
-        int percent = 100;
-        if(m_endNum > m_startNum) {
-            percent = (i-m_startNum)*100/(m_endNum-m_startNum);
-        }
-
-        emit emailAvailable(email, i, percent);
     }
+
+    emit emailAvailable("", 0, 100);
 }
 
 void GetEmailThread::setUrl(const QString &url)
