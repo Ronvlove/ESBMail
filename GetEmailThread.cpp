@@ -19,6 +19,7 @@ public:
         connect(manager, SIGNAL(finished(QNetworkReply*)), &eventLoop, SLOT(quit()));
         eventLoop.exec();       //block until finish
         responseData = reply->readAll();
+        manager->deleteLater();
         return QString(responseData);
     }
 };
@@ -62,6 +63,7 @@ void GetEmailThread::run()
             email.replace("[at]", "@");
             email.remove("<br />");
             email.remove(" ");
+            email.remove("&nbsp;");
 
             qDebug() << i
                      << email;

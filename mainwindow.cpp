@@ -3,7 +3,7 @@
 #include <QFileDialog>
 #include <QTextStream>
 
-#define MAX_THREADS     30
+#define MAX_THREADS     100
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
