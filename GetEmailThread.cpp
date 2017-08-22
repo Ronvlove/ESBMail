@@ -40,39 +40,38 @@ void GetEmailThread::run()
 
         int from = 0;
         int nCurrentFrameStart = 1;
+        bool gotmail = false;
         while(nCurrentFrameStart > 0) {
             nCurrentFrameStart = data.indexOf(QRegExp("class=\"mail\""), from);
-
             from = nCurrentFrameStart+13;
 
             QString email = data.mid(from, 100);
 
-            if(!email.contains("[at]")) {
-                continue;
-            }
-            int end = email.indexOf(QRegExp("\\</a\\>"));
-
-            if(end < 0) {
-                qDebug() << email;
+            if(email.contains("[at]")) {
+                gotmail = true;
+                getMailAddress(email, i);
+            } else {
                 continue;
             }
 
-            email = email.left(end);
+        }
 
-            email.replace("&#46;", ".");
-            email.replace("[at]", "@");
-            email.remove("<br />");
-            email.remove(" ");
-            email.remove("&nbsp;");
+        if(!gotmail) {
+            nCurrentFrameStart = data.indexOf(QRegExp("\\[at\\]"));
+            if(nCurrentFrameStart > 0) {
+                int s = data.lastIndexOf(">", nCurrentFrameStart);
 
-            qDebug() << i
-                     << email;
+                if(s > 0) {
+                    QString email = data.mid(s+1, 100);
 
-            if(email.contains("esb-online.com")) {
-                continue;
+                    if(email.contains("[at]")) {
+                        gotmail = true;
+                        getMailAddress(email, i);
+                    } else {
+                        continue;
+                    }
+                }
             }
-
-            emit emailAvailable(email, i);
         }
 
         emit urlChanged(url);
@@ -83,6 +82,34 @@ void GetEmailThread::run()
             return;
         }
     }
+}
+
+void GetEmailThread::getMailAddress(QString &d, int &idx)
+{
+    QString email;
+
+    int end = d.indexOf(QRegExp("\\<"));
+
+    if(end < 0) {
+        qDebug() << d;
+        return;
+    }
+
+    email = d.left(end);
+
+    email.replace("&#46;", ".");
+    email.replace("[at]", "@");
+    email.remove(" ");
+    email.remove("&nbsp;");
+
+    qDebug() << idx
+             << email;
+
+    if(email.contains("esb-online.com")) {
+        return;
+    }
+
+    emit emailAvailable(email, idx);
 }
 
 void GetEmailThread::setUrl(const QString &url)

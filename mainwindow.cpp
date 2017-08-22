@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QFileDialog>
 #include <QTextStream>
+#include <QDebug>
 
 #define MAX_THREADS     100
 
