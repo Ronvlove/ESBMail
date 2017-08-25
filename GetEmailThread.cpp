@@ -36,7 +36,7 @@ void GetEmailThread::run()
         QString url = m_url + QString::number(i);
         QString data = TT::getHtml(url);
 
-        qDebug() << url;
+        qDebug() << url << data.size();
 
         int from = 0;
         int nCurrentFrameStart = 1;
@@ -74,6 +74,24 @@ void GetEmailThread::run()
             }
         }
 
+        if(!gotmail) {
+            nCurrentFrameStart = data.indexOf(QRegExp("@"));
+            if(nCurrentFrameStart > 0) {
+                int s = data.lastIndexOf(">", nCurrentFrameStart);
+
+                if(s > 0) {
+                    QString email = data.mid(s+1, 100);
+
+                    if(email.contains("@")) {
+                        gotmail = true;
+                        getMailAddress(email, i);
+                    } else {
+                        continue;
+                    }
+                }
+            }
+        }
+
         emit urlChanged(url);
 
         if(m_stop) {
@@ -99,15 +117,24 @@ void GetEmailThread::getMailAddress(QString &d, int &idx)
 
     email.replace("&#46;", ".");
     email.replace("[at]", "@");
-    email.remove(" ");
     email.remove("&nbsp;");
 
-    qDebug() << idx
-             << email;
+    email = email.simplified();
+
+    email.remove(" ");
 
     if(email.contains("esb-online.com")) {
         return;
     }
+
+    email = email.toLower();
+
+    if(email.startsWith('@') || email.endsWith('@')) {
+        return;
+    }
+
+    qDebug() << idx
+             << email;
 
     emit emailAvailable(email, idx);
 }
