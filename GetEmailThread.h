@@ -31,7 +31,7 @@ private:
     int m_endNum;
     bool m_stop;
 
-    void getMailAddress(QString &d, int &idx);
+    bool getMailAddress(QString &d, int &idx);
 };
 
 #endif // GETEMAILTHREAD_H
