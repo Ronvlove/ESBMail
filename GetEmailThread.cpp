@@ -108,6 +108,28 @@ bool GetEmailThread::getMailAddress(QString &d, int &idx)
         return false;
     }
 
+    if(email.contains(" ")) {
+        QStringList lst = email.split(" ");
+
+        foreach (QString e, lst) {
+            if(e.contains("@")) {
+                email = e;
+                break;
+            }
+        }
+    }
+
+    if(email.contains(":")) {
+        QStringList lst = email.split(":");
+
+        foreach (QString e, lst) {
+            if(e.contains("@")) {
+                email = e;
+                break;
+            }
+        }
+    }
+
     if(!email.contains("@")) {
         return false;
     }
